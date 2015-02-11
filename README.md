@@ -51,8 +51,9 @@ DbpediaID/Barack_Obama B.O is the president of DbpediaID/USA
 1. Make sure you got a `Readable Wikipedia`
 2. Download Spark : http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz
 3. In your Spark folder do:
-   ```bin/spark-submit --class "org.idio.wikipedia.word2vec.Word2VecCorpus"  target/scala-2.10/wiki2vec-assembly-1.0.jar /PathToYourReadableWiki/readableWiki.lines /Path/To/RedirectsFile /PathToOut/Word2vecReadyWikipediaCorpus
-```
+  ```
+  bin/spark-submit --class "org.idio.wikipedia.word2vec.Word2VecCorpus"  target/scala-2.10/wiki2vec-assembly-1.0.jar   /PathToYourReadableWiki/readableWiki.lines /Path/To/RedirectsFile /PathToOut/Word2vecReadyWikipediaCorpus
+  ```
 4. Feed your corpus to a word2vec tool like: 
    - [Gensim](https://radimrehurek.com/gensim/)
    - [DeepLearning4j](https://github.com/SkymindIO/deeplearning4j): Feb 2014, Gets stuck in infinite loops on a big corpus

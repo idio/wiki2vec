@@ -2,6 +2,10 @@
 
 Utilities for creating Word2Vec vectors for Dbpedia Entities via a Wikipedia Dump.
 
+Within the release of [Word2Vec](http://code.google.com/p/word2vec/) the Google team released vectors for freebase entities trained on the Wikipedia. These vectors are useful for a variety of tasks.
+
+This Tool will allow you to do generate those vectors. Instead of `mids` entities will be addressed via `DbpediaIds` which correspond to wikipedia article's titles.
+
 ## Compile
 
  - Get sbt

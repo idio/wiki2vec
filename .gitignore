@@ -1,0 +1,6 @@
+target
+lib_managed
+bin
+project/target
+project/project/target
+.idea

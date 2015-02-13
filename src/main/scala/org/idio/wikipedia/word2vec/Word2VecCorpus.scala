@@ -4,6 +4,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkContext, SparkConf}
 import info.bliki.wiki.filter.PlainTextConverter
 import info.bliki.wiki.model.WikiModel
+import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
 
 /**
  * Creates a corpus which can feed to word2vec
@@ -51,10 +52,12 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
     titleArticleText.map{
       case (title, text) =>
         // Removes all of the Wikimedia boilerplate, so we can get only the article's text
-        val wikiModel = new WikiModel("http://www.mywiki.com/wiki/${image}", "http://www.mywiki.com/wiki/${title}")
+        val wikiModel = new EnglishWikipediaPage()
+
+        WikipediaPage.readPage(wikiModel, text)
 
         // cleans wikimedia markup
-        val markupClean = wikiModel.render(new PlainTextConverter(), text)
+        val markupClean = wikiModel.getTitle()+" "+wikiModel.getContent()
 
         // clean brackets i.e: {{cite}}
         val cleanedText = ArticleCleaner.cleanCurlyBraces(markupClean)

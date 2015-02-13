@@ -27,3 +27,9 @@ libraryDependencies += "org.apache.spark" %% "spark-core" % "1.2.0" % "provided"
 libraryDependencies += "com.bizo" % "mighty-csv_2.10" % "0.2"
 
 libraryDependencies += "net.debasishg" %% "redisclient" % "2.13"
+
+libraryDependencies += "org.scalanlp" %% "chalk" % "1.3.2"  exclude ("com.typesafe.sbt", "sbt-pgp")
+
+libraryDependencies += "org.apache.opennlp" % "opennlp-tools" % "1.5.2-incubating"
+
+

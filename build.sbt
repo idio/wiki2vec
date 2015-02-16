@@ -32,4 +32,8 @@ libraryDependencies += "org.scalanlp" %% "chalk" % "1.3.2"  exclude ("com.typesa
 
 libraryDependencies += "org.apache.opennlp" % "opennlp-tools" % "1.5.2-incubating"
 
+libraryDependencies += "com.github.rholder" % "snowball-stemmer" % "1.3.0.581.1"
+
+
+
 

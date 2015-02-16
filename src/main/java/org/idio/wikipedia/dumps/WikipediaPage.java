@@ -403,9 +403,9 @@ public abstract class WikipediaPage  {
      * @param page the <code>WikipediaPage</code> object
      * @param s raw XML string
      */
-    public static void readPage(WikipediaPage page, String s) {
+    public static String readPage(WikipediaPage page, String s) {
         page.page = s;
-        page.processPage(s);
+        return page.getContent();
     }
 
     /**

@@ -1,5 +1,5 @@
 package org.idio.wikipedia.word2vec
-
+import java.util.regex.Matcher.quoteReplacement
 import scala.util.matching.Regex
 
 object ArticleCleaner {
@@ -37,18 +37,17 @@ object ArticleCleaner {
     // regex to find links to other wiki articles
     val linksRegex = """\[\[([^:\[\]])+\]\]""".r
 
-
-    linksRegex.replaceAllIn(text, linkMatch => {
-          try{
-               val (surfaceForm, dbpediaId) = parseWikimediaLink(linkMatch.toString())
-               processLink(surfaceForm, dbpediaId)
-         }catch{
-            case _=>{
-                println("error with link: " + linkMatch.toString())
-                ""
-            }
+      linksRegex.replaceAllIn(quoteReplacement(text), linkMatch => {
+        try {
+          val (surfaceForm, dbpediaId) = parseWikimediaLink(linkMatch.toString())
+          processLink(surfaceForm, dbpediaId)
+        } catch {
+          case _ => {
+            println("error with link: " + linkMatch.toString())
+            ""
+          }
         }
-    })
+      })
 
   }
 
@@ -60,6 +59,12 @@ object ArticleCleaner {
     // regex to find external links
     val curlyBracesRegex = """\{\{([^:\[\]])+\}\}""".r
     curlyBracesRegex.replaceAllIn(text, "")
+  }
+
+  def cleanStyle(text:String):String ={
+    // clean css style encoded as: {| class "wikitable" style "float: right; margin-left: 1em;"
+    val styleRegex = """\{\|.*\|\}""".r
+    styleRegex.replaceAllIn(text, "")
   }
 
 }

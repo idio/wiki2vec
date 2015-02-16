@@ -5,6 +5,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 import info.bliki.wiki.filter.PlainTextConverter
 import info.bliki.wiki.model.WikiModel
 import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
+import org.idio.wikipedia.utils.Stemmer
 
 /**
  * Creates a corpus which can feed to word2vec
@@ -14,7 +15,7 @@ import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
  * A Readable Wikipedia dump is defined as one in which every line in hte file follows:
  * [Article Title] [Tab] [Article Text]
  */
-class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOutput:String)(implicit val sc: SparkContext){
+class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOutput:String, language:String)(implicit val sc: SparkContext){
 
   private val PREFIX = "DBPEDIA_ID/"
 
@@ -54,10 +55,11 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
         // Removes all of the Wikimedia boilerplate, so we can get only the article's text
         val wikiModel = new EnglishWikipediaPage()
 
-        WikipediaPage.readPage(wikiModel, text)
-
         // cleans wikimedia markup
-        val markupClean = wikiModel.getTitle()+" "+wikiModel.getContent()
+        val pageContent = WikipediaPage.readPage(wikiModel, text)
+
+        // cleans further Style tags {| some CSS inside |}
+        val markupClean = ArticleCleaner.cleanStyle(pageContent)
 
         // clean brackets i.e: {{cite}}
         val cleanedText = ArticleCleaner.cleanCurlyBraces(markupClean)
@@ -69,7 +71,6 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
     }
 
   }
-
 
   /*
  * Replaces links to wikipedia  articles following the format:
@@ -89,9 +90,12 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
     ** ToDo: Redirections should be taken into account..
     ** Dbpedia has to be checked for redirections and replaced accordingly..
     **/
-    def replace(dbpdiaId:String, anchorText:String): String = {
+
+    // avoiding to serialize this class for Spark
+    val prefix = PREFIX.toString
+
+    val replace = { (anchorText:String, dbpdiaId:String) =>
       // Avoiding serializing this for spark..
-      val prefix = PREFIX
       " " + prefix + dbpdiaId + " " + anchorText + " "
     }
      // replaces {{linkToWikipediaARticle}} =>  DBPEDIA_ID/wikiPediaTitle
@@ -107,10 +111,19 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
   * */
   private def tokenize(stringRDD:RDD[(String,String)]): RDD[String] ={
 
+    val prefix = PREFIX
+    val language_local = language
+
     val tokenizedLines = stringRDD.map{
-      case (dbedpia, line) =>
-        line.replace(",","").replace(".","").replace("“","").replace("\\","").replace("[","").replace("]","").
-          replace("‘","").toLowerCase.split("\\s").mkString(" ")
+      case (dbpedia, line) =>
+        val stemmer = new Stemmer(language_local)
+         line.split("\\s").map{
+            word =>
+               word match{
+                 case w if w.startsWith(prefix) => w
+                 case _ => stemmer.stem(word.replace(",","").replace(".","").replace("“","").replace("\\","").replace("[","").replace("]","").replace("‘",""))
+               }
+         }.mkString(" ")
     }
     tokenizedLines
   }
@@ -132,6 +145,7 @@ object Word2VecCorpus{
     val pathToReadableWikipedia = "file://" + args(0)
     val pathToRedirects =  args(1)
     val pathToOutput = "file://" + args(2)
+    val language = args(3)
 
 
     println("Path to Readable Wikipedia: "+ pathToReadableWikipedia)
@@ -145,7 +159,7 @@ object Word2VecCorpus{
 
     implicit val sc: SparkContext = new SparkContext(conf)
 
-    val word2vecCorpusCreator = new Word2VecCorpus(pathToReadableWikipedia, pathToRedirects,pathToOutput)
+    val word2vecCorpusCreator = new Word2VecCorpus(pathToReadableWikipedia, pathToRedirects,pathToOutput, language)
     word2vecCorpusCreator.getWord2vecCorpus()
   }
 }

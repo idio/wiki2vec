@@ -1,4 +1,5 @@
 package org.idio.wikipedia.word2vec
+import org.idio.wikipedia.redirects.RedirectStore
 import java.util.regex.Matcher.quoteReplacement
 import scala.util.matching.Regex
 
@@ -32,7 +33,7 @@ object ArticleCleaner {
   * It replaces all intra-wiki links ( [[Dbpedia Title]] and [[Dbpedia Title|Anchor]]) in Text
   * for :  processLink(processedDbpediaTitle, AnchorText)
   * */
-  def replaceLinks(text:String, processLink: (String, String) => String): String ={
+  def replaceLinks(text:String, processLink: (String, String) => String, redirectStore: RedirectStore): String ={
 
     // regex to find links to other wiki articles
     val linksRegex = """\[\[([^:\[\]])+\]\]""".r
@@ -40,7 +41,8 @@ object ArticleCleaner {
       linksRegex.replaceAllIn(quoteReplacement(text), linkMatch => {
         try {
           val (surfaceForm, dbpediaId) = parseWikimediaLink(linkMatch.toString())
-          processLink(surfaceForm, dbpediaId)
+          val canonicalDbpediaId = redirectStore.getCanonicalId(dbpediaId)
+          processLink(surfaceForm, canonicalDbpediaId)
         } catch {
           case _ => {
             println("error with link: " + linkMatch.toString())

@@ -5,6 +5,7 @@ import org.apache.spark.{SparkContext, SparkConf}
 import info.bliki.wiki.filter.PlainTextConverter
 import info.bliki.wiki.model.WikiModel
 import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
+import org.idio.wikipedia.redirects.{RedisRedirectStore, MapRedirectStore, EmptyRedirectStore, RedirectStore}
 import org.idio.wikipedia.utils.Stemmer
 
 /**
@@ -15,7 +16,7 @@ import org.idio.wikipedia.utils.Stemmer
  * A Readable Wikipedia dump is defined as one in which every line in hte file follows:
  * [Article Title] [Tab] [Article Text]
  */
-class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOutput:String, language:String)(implicit val sc: SparkContext){
+class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pathToOutput:String, language:String)(implicit val sc: SparkContext){
 
   private val PREFIX = "DBPEDIA_ID/"
 
@@ -25,6 +26,8 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
 
   // RDD (WikiTitle, Article Text)
   private val wikiTitleTexts = getPairRDD(readableWikipedia)
+
+  private val redirectStoreBC = sc.broadcast(redirectStore)
 
   /*
   * Returns a PairRDD (WikiTitle, ArticleText)
@@ -84,12 +87,7 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
  *  DBPEDIA_ID/Wikipedia_Title <Space> anchor
  *
  * */
-  private def replaceLinksForIds(titleArticleText:RDD[(String, String)])={
-
-    /*
-    ** ToDo: Redirections should be taken into account..
-    ** Dbpedia has to be checked for redirections and replaced accordingly..
-    **/
+  private def replaceLinksForIds(titleArticleText:RDD[(String, String)], redirectStore: RedirectStore)={
 
     // avoiding to serialize this class for Spark
     val prefix = PREFIX.toString
@@ -99,8 +97,9 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
       " " + prefix + dbpdiaId + " " + anchorText + " "
     }
      // replaces {{linkToWikipediaARticle}} =>  DBPEDIA_ID/wikiPediaTitle
+    val redirectStore_local = redirectStoreBC.value
     titleArticleText.map{ case(title,text) =>
-      (title, ArticleCleaner.replaceLinks(text, replace))
+      (title, ArticleCleaner.replaceLinks(text, replace, redirectStore_local))
     }
   }
 
@@ -130,7 +129,7 @@ class Word2VecCorpus(pathToReadableWiki:String, pathToRedirects:String, pathToOu
 
 
   def getWord2vecCorpus(): Unit ={
-    val replacedLinks = replaceLinksForIds(wikiTitleTexts)
+    val replacedLinks = replaceLinksForIds(wikiTitleTexts, redirectStore)
     val cleanedArticles = cleanArticles(replacedLinks)
     val tokenizedArticles = tokenize(cleanedArticles)
     tokenizedArticles.saveAsTextFile(pathToOutput)
@@ -145,7 +144,9 @@ object Word2VecCorpus{
     val pathToReadableWikipedia = "file://" + args(0)
     val pathToRedirects =  args(1)
     val pathToOutput = "file://" + args(2)
-    val language = args(3)
+    val language = try { args(3) }catch{
+         case _ => "englishStemmer"
+    }
 
 
     println("Path to Readable Wikipedia: "+ pathToReadableWikipedia)
@@ -159,7 +160,23 @@ object Word2VecCorpus{
 
     implicit val sc: SparkContext = new SparkContext(conf)
 
-    val word2vecCorpusCreator = new Word2VecCorpus(pathToReadableWikipedia, pathToRedirects,pathToOutput, language)
+
+    val redirectStore = try{
+      println("inserting redirects into redis")
+      val redirects = new RedisRedirectStore(pathToRedirects)
+      println("finished inserting into redis")
+      redirects
+    }catch{
+      case e:Exception=> {
+         e.printStackTrace()
+         println("using empty redirect store..")
+         new EmptyRedirectStore(pathToRedirects)
+      }
+    }
+
+
+
+    val word2vecCorpusCreator = new Word2VecCorpus(pathToReadableWikipedia, redirectStore, pathToOutput, language)
     word2vecCorpusCreator.getWord2vecCorpus()
   }
 }

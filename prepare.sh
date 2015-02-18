@@ -53,6 +53,8 @@ WIKIPEDIA_PATH="$WDIR/${LANGUAGE}wiki-latest-pages-articles.xml.bz2"
 echo "Downloading Apache Spark"
 curl "http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz" | tar xvz
 
+apt-get update
+
 # Installing Java
 add-apt-repository ppa:webupd8team/java
 
@@ -70,7 +72,7 @@ sbt assembly
 
 # Process Wiki
 echo "Creating Readable Wiki.."
-java -Xmx10G -Xms10G -cp org.idio.wikipedia.dumps.ReadableWiki $JAR_PATH $WIKIPEDIA_PATH $READABLEWIKI
+java -Xmx10G -Xms10G -cp $JAR_PATH org.idio.wikipedia.dumps.CreateReadableWiki $WIKIPEDIA_PATH $READABLEWIKI
 
 # Create Wiki2Vec Corpus
 echo "Creating Word2vec Corpus"

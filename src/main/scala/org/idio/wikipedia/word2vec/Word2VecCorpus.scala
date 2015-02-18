@@ -162,9 +162,7 @@ object Word2VecCorpus{
 
 
     val redirectStore = try{
-      println("inserting redirects into redis")
-      val redirects = new RedisRedirectStore(pathToRedirects)
-      println("finished inserting into redis")
+      val redirects = new MapRedirectStore(pathToRedirects)
       redirects
     }catch{
       case e:Exception=> {

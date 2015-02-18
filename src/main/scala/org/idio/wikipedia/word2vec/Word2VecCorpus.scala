@@ -6,8 +6,8 @@ import info.bliki.wiki.filter.PlainTextConverter
 import info.bliki.wiki.model.WikiModel
 import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
 import org.idio.wikipedia.redirects.{RedisRedirectStore, MapRedirectStore, EmptyRedirectStore, RedirectStore}
-import org.idio.wikipedia.utils.Stemmer
-
+import org.idio.wikipedia.utils.{NoStemmer, Stemmer, SnowballStemmer}
+import java.util.Locale
 /**
  * Creates a corpus which can feed to word2vec
  * to extract vectors for each wikipedia Topic.
@@ -28,6 +28,8 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
   private val wikiTitleTexts = getPairRDD(readableWikipedia)
 
   private val redirectStoreBC = sc.broadcast(redirectStore)
+
+  private val stemmerName = new Locale(language).getDisplayLanguage().toLowerCase() +"Stemmer"
 
   /*
   * Returns a PairRDD (WikiTitle, ArticleText)
@@ -111,11 +113,15 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
   private def tokenize(stringRDD:RDD[(String,String)]): RDD[String] ={
 
     val prefix = PREFIX
-    val language_local = language
+    val stemmerName_local = stemmerName
 
     val tokenizedLines = stringRDD.map{
       case (dbpedia, line) =>
-        val stemmer = new Stemmer(language_local)
+        val stemmer = try{
+                          new SnowballStemmer(stemmerName_local)
+                    }catch{
+                      case _=> new NoStemmer()
+                }
          line.split("\\s").map{
             word =>
                word match{
@@ -145,7 +151,10 @@ object Word2VecCorpus{
     val pathToRedirects =  args(1)
     val pathToOutput = "file://" + args(2)
     val language = try { args(3) }catch{
-         case _ => "englishStemmer"
+         case _ => {
+           println("Warning: Stemming is deactivated..")
+           "NoStemmer"
+         }
     }
 
 

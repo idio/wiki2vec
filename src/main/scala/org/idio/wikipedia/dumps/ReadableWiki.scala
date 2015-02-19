@@ -1,6 +1,6 @@
 package org.idio.wikipedia.dumps
 
-import java.io.{FileWriter, BufferedWriter, BufferedInputStream, FileInputStream}
+import java.io._
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import com.stratio.parsers.XMLDumpParser
@@ -17,7 +17,7 @@ class ReadableWiki(pathToWikipediaDump: String, pathToOutFile: String){
       val fin = new FileInputStream(wikipediaXmlDump);
       val bis = new BufferedInputStream(fin);
       val input = new BZip2CompressorInputStream(bis, true);
-      input
+      new InputStreamReader(input, "UTF-8")
     }
 
     /*
@@ -28,8 +28,8 @@ class ReadableWiki(pathToWikipediaDump: String, pathToOutFile: String){
     * */
     def createReadableWiki(): Unit ={
 
-      val writer = new BufferedWriter(new FileWriter(pathToOutFile))
-      val parser = new XMLDumpParser( getWikipediaStream(pathToWikipediaDump))
+      val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathToOutFile), "UTF-8"))
+      val parser = new XMLDumpParser( pathToWikipediaDump)
       var counter = 0
 
       parser.getContentHandler.setRevisionCallback(new RevisionCallback {

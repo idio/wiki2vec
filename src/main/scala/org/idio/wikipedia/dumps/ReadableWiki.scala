@@ -16,8 +16,7 @@ class ReadableWiki(pathToWikipediaDump: String, pathToOutFile: String){
     private def getWikipediaStream(wikipediaXmlDump: String) ={
       val fin = new FileInputStream(wikipediaXmlDump);
       val bis = new BufferedInputStream(fin);
-      val input = new BZip2CompressorInputStream(bis, true);
-      new InputStreamReader(input, "UTF-8")
+      new BZip2CompressorInputStream(bis, true)
     }
 
     /*
@@ -29,7 +28,7 @@ class ReadableWiki(pathToWikipediaDump: String, pathToOutFile: String){
     def createReadableWiki(): Unit ={
 
       val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pathToOutFile), "UTF-8"))
-      val parser = new XMLDumpParser( pathToWikipediaDump)
+      val parser = new XMLDumpParser(getWikipediaStream(pathToWikipediaDump))
       var counter = 0
 
       parser.getContentHandler.setRevisionCallback(new RevisionCallback {

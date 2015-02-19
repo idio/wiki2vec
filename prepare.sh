@@ -18,7 +18,8 @@ usage ()
 
 shift $((OPTIND - 1))
 
-if [ $# < 2 ] then
+if [ $# < 2 ]
+then
     usage
     exit
 fi
@@ -42,15 +43,6 @@ fi
 echo "Language: $LANGUAGE"
 echo "Working directory: $WDIR"
 
-mkdir -p $WDIR
-cd $WDIR
-
-echo "Downloading Wikipedia Dump"
-curl -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles.xml.bz2"
-WIKIPEDIA_PATH="$WDIR/${LANGUAGE}wiki-latest-pages-articles.xml.bz2"
-
-echo "Downloading Apache Spark"
-curl "http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz" | tar xvz
 
 apt-get update
 
@@ -62,6 +54,18 @@ echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/s
 
 apt-get update
 apt-get install unzip oracle-java7-installer sbt
+
+
+mkdir -p $WDIR
+cd $WDIR
+
+echo "Downloading Wikipedia Dump"
+curl -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
+WIKIPEDIA_PATH="$WDIR/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
+
+echo "Downloading Apache Spark"
+curl "http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz" | tar xvz
+
 
 # Compiling
 echo "Compiling wiki2vec..."

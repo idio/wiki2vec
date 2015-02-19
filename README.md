@@ -8,12 +8,28 @@ This Tool will allow you to do generate those vectors. Instead of `mids` entitie
 
 ## Quick usage:
 
-- Run `prepare.sh` on Ubuntu 14.04
+- The automated Script set up and runs everything on Ubuntu 14.04. For other Platforms check `Going the long way`
+- Run `sudo sh prepare.sh <Locale> PathToOutputFolder`. i.e: 
+   - `sudo sh prepare.sh es_ES /mnt/data/`  will work on the spanish wikipedia
+   - `sudo sh prepare.sh en_US /mnt/data/`  will work on the english wikipedia
+   - `sudo sh prepare.sh da_DA /mnt/data/`  will work on the danish wikipedia
+  
+- Running `prepare` will:
+   - Download the latest wikipedia dump for the given language
+   - Clean the dump, stem it and tokenize it
+   - Create a `language.corpus` file in `outputFolder`, this corpus can be fed to any word2vec tool to generate vectors.
 
-This will:
+- Once you get `language.corpus` go to `resources/gensim` and do:
 
-- Download the latest wikidump for the selected language
-- Process the wikidump to generate a corpus which can be fed to any word2vec tool
+  `wiki2vec.sh pathToCorpus pathToOutputFolder <MIN_WORD_COUNT> <VECTOR_SIZE> <WINDOW_SIZE>`
+
+this will install all requiered dependencies for Gensim and build word2vec vectors.
+
+i.e:
+
+`wiki2vec.sh corpus output 50 500 10`
+
+- Discards words below 50 counts, generate vectors of size 500, and the window size for building the counts of each occurence is 10 words.
 
 ## Going the long way
 
@@ -65,7 +81,23 @@ DbpediaID/Barack_Obama B.O is the president of DbpediaID/USA
   ```
   bin/spark-submit --class "org.idio.wikipedia.word2vec.Word2VecCorpus"  target/scala-2.10/wiki2vec-assembly-1.0.jar   /PathToYourReadableWiki/readableWiki.lines /Path/To/RedirectsFile /PathToOut/Word2vecReadyWikipediaCorpus
   ```
-4. Feed your corpus to a word2vec tool like
+4. Feed your corpus to a word2vec tool
+
+### Stemming
+
+By default the word2vec corpus is always stemmed. If you don't want that to happen: 
+
+
+#### Prepare
+pass None as an extra argument
+
+`sudo sh prepare.sh es_ES /mnt/data/ None`  will work on the spanish wikipedia and won't stem words
+
+#### Manually calling spark
+Pass None as an extra argument 
+ ```
+ bin/spark-submit --class "org.idio.wikipedia.word2vec.Word2VecCorpus"  target/scala-2.10/wiki2vec-assembly-1.0.jar   /PathToYourReadableWiki/readableWiki.lines /Path/To/RedirectsFile /PathToOut/Word2vecReadyWikipediaCorpus None
+ ```
 
 
 ## Word2Vec tools:
@@ -75,8 +107,8 @@ DbpediaID/Barack_Obama B.O is the president of DbpediaID/USA
 - [Spark's word2vec](https://github.com/apache/spark/blob/master/mllib/src/main/scala/org/apache/spark/mllib/feature/Word2Vec.scala): Feb 2014, `number of dimensions` * `vocabulary size` has to be less than a certain value otherwise an exception is thrown. [issue](http://mail-archives.apache.org/mod_mbox/spark-issues/201412.mbox/%3CJIRA.12761684.1418621192000.36769.1418759475999@Atlassian.JIRA%3E)
 
 
+
 ## ToDo:
 - Remove hard coded spark params
-- Better Tokenization
 - Handle Wikipedia Redirections
 - Intra Article co-reference resolution

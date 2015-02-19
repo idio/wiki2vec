@@ -3,6 +3,8 @@
 #| Idio Wiki2Vec                                                                      |                                                                                                     |
 #+------------------------------------------------------------------------------------------------------------------------------+
 
+# Creates Wiki2Vec corpora out of a wikipedia dump
+
 # $1 Locale (en_US)
 # $2 Target Folder( Output Folder)
 # $3 Stemmer

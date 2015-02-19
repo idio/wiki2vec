@@ -5,7 +5,7 @@ Utilities for creating Word2Vec vectors for Dbpedia Entities via a Wikipedia Dum
 Within the release of [Word2Vec](http://code.google.com/p/word2vec/) the Google team released vectors for freebase entities trained on the Wikipedia. These vectors are useful for a variety of tasks.
 
 This Tool will allow you to generate those vectors. Instead of `mids` entities will be addressed via `DbpediaIds` which correspond to wikipedia article's titles.
-Vectors are generated for (i) words appearing inside wikipedia (ii0 vectors for topics i.e: `dbpedia/Barack_Obama`.
+Vectors are generated for (i) words appearing inside wikipedia (ii) vectors for topics i.e: `dbpedia/Barack_Obama`.
 
 
 
@@ -33,6 +33,25 @@ i.e:
 `wiki2vec.sh corpus output 50 500 10`
 
 - Discards words below 50 counts, generate vectors of size 500, and the window size for building the counts of each occurence is 10 words.
+
+------
+
+`prepare.sh` script installs:
+ - Java 7
+ - Sbt
+ - Apache Spark
+
+`wiki2vec.sh` script installs:
+ - python-pip
+ - build-essential
+ - liblapack-dev
+ - gfortran
+ - zlib1g-dev
+ - python-dev
+ - cython
+ - numpy
+ - scipy
+ - gensim
 
 ## Going the long way
 
@@ -91,13 +110,13 @@ DbpediaID/Barack_Obama B.O is the president of DbpediaID/USA
 By default the word2vec corpus is always stemmed. If you don't want that to happen: 
 
 
-#### Prepare
+#### If using the automated scripts..
 pass None as an extra argument
 
 `sudo sh prepare.sh es_ES /mnt/data/ None`  will work on the spanish wikipedia and won't stem words
 
-#### Manually calling spark
-Pass None as an extra argument 
+#### If you are manually running the tools:
+Pass None as an extra argument when calling spark
  ```
  bin/spark-submit --class "org.idio.wikipedia.word2vec.Word2VecCorpus"  target/scala-2.10/wiki2vec-assembly-1.0.jar   /PathToYourReadableWiki/readableWiki.lines /Path/To/RedirectsFile /PathToOut/Word2vecReadyWikipediaCorpus None
  ```

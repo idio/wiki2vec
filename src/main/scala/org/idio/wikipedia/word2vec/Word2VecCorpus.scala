@@ -29,8 +29,6 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
 
   private val redirectStoreBC = sc.broadcast(redirectStore)
 
-  private val stemmerName = new Locale(language).getDisplayLanguage().toLowerCase() +"Stemmer"
-
   /*
   * Returns a PairRDD (WikiTitle, ArticleText)
   * Out of a readable wikipedia
@@ -113,12 +111,12 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
   private def tokenize(stringRDD:RDD[(String,String)]): RDD[String] ={
 
     val prefix = PREFIX
-    val stemmerName_local = stemmerName
+    val language_local = language
 
     val tokenizedLines = stringRDD.map{
       case (dbpedia, line) =>
         val stemmer = try{
-                          new SnowballStemmer(stemmerName_local)
+                          new SnowballStemmer(language_local)
                     }catch{
                       case _=> new NoStemmer()
                 }

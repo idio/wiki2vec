@@ -1,6 +1,5 @@
 package org.idio.wikipedia.utils
-
-import org.tartarus.snowball.SnowballProgram
+import java.util.Locale
 
 trait Stemmer{
   def stem(token:String):String
@@ -10,14 +9,16 @@ class NoStemmer() extends Stemmer{
   def stem(token:String):String = token
 }
 
-class SnowballStemmer(stemmer: SnowballProgram) extends Stemmer{
+class SnowballStemmer(locale:Locale) extends Stemmer{
 
-  def this(s: String) =
-    this(Class.forName("org.tartarus.snowball.ext.%s".format(s)).newInstance().asInstanceOf[SnowballProgram])
+  private val stemmerName = locale.getDisplayLanguage().toLowerCase() +"Stemmer"
+  val stemmer = Class.forName("org.tartarus.snowball.ext.%s".format(stemmerName)).newInstance().asInstanceOf[org.tartarus.snowball.SnowballStemmer]
 
+  def this(language: String) =  this(new Locale(language))
 
   def stem(token: String): String = this.synchronized {
     stemmer.setCurrent(token.toLowerCase)
+    stemmer.stem()
     stemmer.getCurrent
   }
 

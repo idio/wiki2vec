@@ -36,8 +36,8 @@ READABLEWIKI="$TARGET_DIR/${LANGUAGE}wiki-latest.lines"
 SPLIT_OUTPUT_CORPUS="$WDIR/${LANGUAGE}wiki"
 OUTPUTCORPUS="$TARGET_DIR/${LANGUAGE}wiki.corpus"
 
-if [ -z "$2" ]; then 
-	STEMMERNAME="$2"
+if [ ! -z "$3" ]; then 
+	STEMMERNAME="$3"
 else 
 	STEMMERNAME="$LANGUAGE"
 fi

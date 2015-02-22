@@ -124,7 +124,7 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
             word =>
                word match{
                  case w if w.startsWith(prefix) => w
-                 case _ => stemmer.stem(word.replace(",","").replace(".","").replace("“","").replace("\\","").replace("[","").replace("]","").replace("‘",""))
+                 case _ => stemmer.stem(word.toLowerCase.replace(",","").replace(".","").replace("“","").replace("\\","").replace("[","").replace("]","").replace("‘",""))
                }
          }.mkString(" ")
     }

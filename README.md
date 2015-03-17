@@ -70,9 +70,13 @@ Every line in a readable wikipedia dump follows the format:
 `Dbpedia Title` `<tab>` `Article's Text`
 
 The class `org.idio.wikipedia.dumps.ReadableWiki` gets a `multistreaming-xml.bz2`wikipedia dump and outputs a readable wikipedia.
-i.e
 
-`java -Xmx10G -Xms10G -cp org.idio.wikipedia.dumps.ReadableWiki wiki2vec-assembly-1.0.jar path-to-wiki-dump/eswiki-20150105-pages-articles-multistream.xml.bz2 pathToReadableWiki/eswiki-readable-20150105.lines`
+params:
+ - path to wikipedia dump
+ - path to output readable wikipedia
+i.e:
+
+`java -Xmx10G -Xms10G -cp org.idio.wikipedia.dumps.ReadableWiki wiki2vec-assembly-1.0.jar path-to-wiki-dump/eswiki-20150105-pages-articles-multistream.xml.bz2 pathTo/output/ReadableWikipedia`
 
 
 ### Word2Vec Corpus

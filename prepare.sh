@@ -29,7 +29,7 @@ fi
 BASE_DIR=$(pwd)
 TARGET_DIR="$2"
 LANGUAGE=`echo $1 | sed "s/_.*//g"`
-WDIR="$BASE_WDIR/$2"
+WDIR="$BASE_DIR/working"
 SPARK_PATH="$WDIR/spark-1.2.0-bin-hadoop2.4"
 JAR_PATH="$BASE_DIR/target/scala-2.10/wiki2vec-assembly-${WIKI2VEC_VERSION}.jar"
 READABLEWIKI="$TARGET_DIR/${LANGUAGE}wiki-latest.lines"

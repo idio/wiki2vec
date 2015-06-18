@@ -44,13 +44,13 @@ You can download via torrent one of the prebuilt word2vec models:
 
 - Once you get `language.corpus` go to `resources/gensim` and do:
 
-  `wiki2vec.sh pathToCorpus pathToOutputFolder <MIN_WORD_COUNT> <VECTOR_SIZE> <WINDOW_SIZE>`
+  `wiki2vec.sh pathToCorpus pathToOutputFile <MIN_WORD_COUNT> <VECTOR_SIZE> <WINDOW_SIZE>`
 
 this will install all requiered dependencies for Gensim and build word2vec vectors.
 
 i.e:
 
-`wiki2vec.sh corpus output 50 500 10`
+`wiki2vec.sh corpus output/model.w2c 50 500 10`
 
 - Discards words below 50 counts, generate vectors of size 500, and the window size for building the counts of each occurence is 10 words.
 

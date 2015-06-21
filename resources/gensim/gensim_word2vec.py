@@ -1,3 +1,21 @@
+import datetime
+import logging
+
+logFormatter = logging.Formatter("%(asctime)s %(levelname)-8s %(name)-18s: %(message)s")
+
+ln = logging.getLogger()
+
+fileHandler = logging.FileHandler("wiki2vec_log%s.txt" % datetime.datetime.now().isoformat())
+
+fileHandler.setFormatter(logFormatter)
+ln.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+ln.addHandler(consoleHandler)
+
+ln.setLevel(logging.DEBUG)
+
 import multiprocessing
 import os
 from optparse import OptionParser

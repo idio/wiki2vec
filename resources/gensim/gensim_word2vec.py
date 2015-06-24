@@ -26,11 +26,11 @@ import gensim
 import re
 
 os.system("taskset -p 0xff %d" % os.getpid())
-g
+
 
 def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10):
     workers = multiprocessing.cpu_count()
-    sentences = gensim.models.word2vec.PreprocessingLineSentence(path_to_corpus)
+    sentences = gensim.models.word2vec.LineSentence(path_to_corpus)
     model = gensim.models.Word2Vec(sentences, min_count=min_count, size=size, window=window, sg=1, workers=workers)
     model.save(output_path)
 

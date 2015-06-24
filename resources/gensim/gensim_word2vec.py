@@ -68,6 +68,7 @@ def main():
     option_dict = vars(options)
     option_dict["path_to_corpus"] = args[0]
     option_dict["output_path"] = args[1]
+    ln.info("Options are: %s" % option_dict)
 
     read_corpus(**option_dict)
 

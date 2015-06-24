@@ -50,11 +50,11 @@ class PreprocessingLineSentence():
                 line = "".join(line_parts)
 
                 line = utils.to_unicode(line)
-                yield line.split()
+                yield line + "\n"
 
 
 def fix_corpus(path_to_corpus):
     fixed = PreprocessingLineSentence(path_to_corpus)
     with open(path_to_corpus + "_fixed", "w") as f:
         for line in fixed:
-            f.write(" ".join(line) + "\n")
+            f.write(line)

@@ -57,4 +57,4 @@ def fix_corpus(path_to_corpus):
     fixed = PreprocessingLineSentence(path_to_corpus)
     with open(path_to_corpus + "_fixed", "w") as f:
         for line in fixed:
-            f.write(line)
+            f.write(" ".join(line) + "\n")

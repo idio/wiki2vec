@@ -1,26 +1,33 @@
 __author__ = 'dowling'
 
 import sys
+
+import logging
+import datetime
+
+format_ = "%(asctime)s %(levelname)-8s %(name)-18s: %(message)s"
+logging.basicConfig(format=format_)
+ln = logging.getLogger()
+ln.setLevel(logging.DEBUG)
+
 from gensim.models.word2vec import Word2Vec
 import numpy as np
 
-
 def convert_model(prefix):
-    print "loading model"
+    ln.info("loading model")
     w2v = Word2Vec.load(prefix)
 
-    print "saving weights as csv..."
+    ln.info("saving dict...")
+    dict_file = prefix + ".wordids.txt"
+    with open(dict_file, "w") as f:
+        for word, voc_obj in w2v.vocab.items():
+            f.write((u"%s\t%s\n" % (word, voc_obj.index)).encode("UTF-8"))
+
+    ln.info("saving weights as csv...")
     weights_file = prefix+".syn0.csv"
     np.savetxt(weights_file, w2v.syn0, delimiter=",")
 
-    print "saving dict..."
-    dict_file = prefix + ".wordids.txt"
-    with open(dict_file, "w") as f:
-        for word, obj in sorted(w2v.vocab.items(), key=lambda (w, o): w2v.vocab[w].index):
-            idx = w2v.vocab[word].index
-            f.write("%s\t%s\n" % (word, idx))
-
-    print "all done. Saved converted model files: %s and %s." % (weights_file, dict_file)
+    ln.info("all done. Saved converted model files: %s and %s." % (weights_file, dict_file))
 
 
 if __name__ == "__main__":

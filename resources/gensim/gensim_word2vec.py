@@ -25,6 +25,7 @@ from optparse import OptionParser
 import gensim
 import re
 
+
 os.system("taskset -p 0xff %d" % os.getpid())
 
 

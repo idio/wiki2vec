@@ -31,7 +31,7 @@ def convert_model(prefix):
 
     ln.info("saving weights as csv...")
     weights_file = prefix+".syn0.csv"
-    np.savetxt(weights_file, w2v.syn0, delimiter=",", header="%sx%s" % w2v.syn0.shape)
+    np.savetxt(weights_file, w2v.syn0, delimiter=",", header="%s\n%s" % w2v.syn0.shape)
 
     ln.info("all done. Saved converted model files: %s and %s." % (weights_file, dict_file))
 

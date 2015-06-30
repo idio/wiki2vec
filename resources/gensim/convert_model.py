@@ -1,3 +1,9 @@
+"""
+This can be used to convert gensim's output Word2Vec model to the two files we need in DBpedia Spotlight:
+ the dictionary and the weights matrix.
+
+They're saved in csv format, which can be read by Spotlight.
+"""
 __author__ = 'dowling'
 
 import sys
@@ -25,7 +31,7 @@ def convert_model(prefix):
 
     ln.info("saving weights as csv...")
     weights_file = prefix+".syn0.csv"
-    np.savetxt(weights_file, w2v.syn0, delimiter=",")
+    np.savetxt(weights_file, w2v.syn0, delimiter=",", header="%sx%s" % w2v.syn0.shape)
 
     ln.info("all done. Saved converted model files: %s and %s." % (weights_file, dict_file))
 

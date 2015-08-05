@@ -2,7 +2,7 @@
 This can be used to convert gensim's output Word2Vec model to the two files we need in DBpedia Spotlight:
  the dictionary and the weights matrix.
 
-They're saved in csv format, which can be read by Spotlight.
+They're saved in csv format, which can be fed into Spotlight's model creation, where it's used to generate the vectors.mem store.
 """
 __author__ = 'dowling'
 

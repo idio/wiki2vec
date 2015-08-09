@@ -62,3 +62,4 @@ def fix_corpus(path_to_corpus):
 if __name__ == "__main__":
     import sys
     fix_corpus(sys.argv[1])
+

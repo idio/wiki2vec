@@ -59,10 +59,19 @@ object RedirectStore{
           line =>
             val entityRegex = "<http://dbpedia.org/resource/([^ >]+)>".r
             val matches = entityRegex.findAllIn(line).matchData
-            val origin = URLDecoder.decode(matches.next().group(1), "utf-8")
-            val destination = URLDecoder.decode(matches.next().group(1), "utf-8")
-            //print(origin + "-->" + destination)
-            (origin, destination)
+            if(matches.hasNext){
+                val origin = URLDecoder.decode(matches.next().group(1), "utf-8")
+                if(matches.hasNext){
+                    val destination = URLDecoder.decode(matches.next().group(1), "utf-8")
+                    //print(origin + "-->" + destination)
+                    (origin, destination)
+                }else{
+                    ("nothing", "nothing")
+                }
+            }else{
+                ("nothing", "nothing")
+            }
+
      }
   }
 

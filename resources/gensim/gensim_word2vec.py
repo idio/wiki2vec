@@ -32,7 +32,12 @@ os.system("taskset -p 0xff %d" % os.getpid())
 def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10):
     workers = multiprocessing.cpu_count()
     sentences = gensim.models.word2vec.LineSentence(path_to_corpus)
-    model = gensim.models.Word2Vec(None, min_count=min_count, size=size, window=window, sg=1, workers=workers)
+    def rule(word, count, min_count):
+        if word.startswith("DBPEDIA_ID/"):
+            return 2
+        else:
+            return 0
+    model = gensim.models.Word2Vec(None, min_count=min_count, size=size, window=window, sg=1, workers=workers, trim_rule=rule)
     model.build_vocab(sentences)
     model.train(sentences)
     model.save(output_path)

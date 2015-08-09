@@ -55,8 +55,12 @@ class RedisRedirectStore(redisHost:String, redisPort:Int, redirects:Iterator[(St
 object RedirectStore{
 
   def readFile(pathToRedirectFile: String) = {
+     var i = 0
      Source.fromFile(pathToRedirectFile, "UTF-8").getLines().map{
           line =>
+            i += 1
+            if (i % 100000 == 0)
+                println(i)
             val entityRegex = "<http://dbpedia.org/resource/([^ >]+)>".r
             val matches = entityRegex.findAllIn(line).matchData
             if(matches.hasNext){

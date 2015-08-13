@@ -29,11 +29,11 @@ import re
 os.system("taskset -p 0xff %d" % os.getpid())
 
 
-def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10):
+def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10, entity_min_count=5):
     workers = multiprocessing.cpu_count()
     sentences = gensim.models.word2vec.LineSentence(path_to_corpus)
     def rule(word, count, min_count):
-        if word.startswith("DBPEDIA_ID/"):
+        if word.startswith("DBPEDIA_ID/") and count >= entity_min_count:
             return 2
         else:
             return 0

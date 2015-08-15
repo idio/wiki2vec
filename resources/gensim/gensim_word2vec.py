@@ -55,6 +55,13 @@ def main():
                       type="int",
                       help="min number of apperances",)
 
+    parser.add_option("-e", "--entity_min_count",
+                      action="store",
+                      dest="entity_min_count",
+                      default=5,
+                      type="int",
+                      help="min number of apperances for DBpedia entities",)
+
     parser.add_option("-s", "--size",
                       action="store",
                       dest="size",

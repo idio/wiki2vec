@@ -47,39 +47,39 @@ echo "Working directory: $WDIR"
 echo "Language stemmer: $STEMMERNAME"
 
 
-#apt-get update
+apt-get update
 
 # Installing Java
-#add-apt-repository ppa:webupd8team/java
+add-apt-repository ppa:webupd8team/java
 
 
 # Installing SBT
-#echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 
-#apt-get update
-#apt-get install unzip oracle-java7-installer sbt
+apt-get update
+apt-get install unzip oracle-java7-installer sbt
 
 
 mkdir -p $WDIR
 cd $WDIR
 
 echo "Downloading Wikipedia Dump"
-# curl -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
+curl -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
 WIKIPEDIA_PATH="$WDIR/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
 
 echo "Downloading Apache Spark"
-#curl "http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz" | tar xvz
+curl "http://d3kbcqa49mib13.cloudfront.net/spark-1.2.0-bin-hadoop2.4.tgz" | tar xvz
 
 
 # Compiling
 echo "Compiling wiki2vec..."
 cd $BASE_DIR
-#sbt assembly
+sbt assembly
 
 
 # Process Wiki
 echo "Creating Readable Wiki.."
-#java -Xmx10G -Xms10G -cp $JAR_PATH org.idio.wikipedia.dumps.CreateReadableWiki $WIKIPEDIA_PATH $READABLEWIKI
+java -Xmx10G -Xms10G -cp $JAR_PATH org.idio.wikipedia.dumps.CreateReadableWiki $WIKIPEDIA_PATH $READABLEWIKI
 
 # Create Wiki2Vec Corpus
 echo "Creating Word2vec Corpus"
@@ -94,4 +94,3 @@ echo "fixing up punctutation in final corpus"
 python resources/fix_corpus.py ${OUTPUTCORPUS}.fixed
 
 echo " ^___^ corpus : ${OUTPUTCORPUS}.fixed
-

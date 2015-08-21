@@ -28,19 +28,22 @@ import re
 
 os.system("taskset -p 0xff %d" % os.getpid())
 
+entity_min_count = 5
+def rule(word, count, min_count):
+    if word.startswith("DBPEDIA_ID/") and count >= entity_min_count:
+        return gensim.utils.RULE_KEEP
+    else:
+        return gensim.utils.RULE_DEFAULT
 
-def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10, entity_min_count=5):
+
+def read_corpus(path_to_corpus, output_path, min_count=10, size=500, window=10, _entity_min_count=5):
+    global entity_min_count
     workers = multiprocessing.cpu_count()
+    entity_min_count = _entity_min_count
     sentences = gensim.models.word2vec.LineSentence(path_to_corpus)
-    def rule(word, count, min_count):
-        if word.startswith("DBPEDIA_ID/") and count >= entity_min_count:
-            return 2
-        else:
-            return 0
     model = gensim.models.Word2Vec(None, min_count=min_count, size=size, window=window, sg=1, workers=workers, trim_rule=rule)
     model.build_vocab(sentences)
     model.train(sentences)
-    model.trim_rule = None  # so we can save
     model.save(output_path)
 
 

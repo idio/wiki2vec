@@ -90,6 +90,8 @@ echo "Joining corpus.."
 cd $SPLIT_OUTPUT_CORPUS
 cat part* >> $OUTPUTCORPUS
 
+echo "fixing up punctutation in final corpus"
+python resources/fix_corpus.py ${OUTPUTCORPUS}.fixed
 
-echo " ^___^ corpus : $OUTPUTCORPUS"
+echo " ^___^ corpus : ${OUTPUTCORPUS}.fixed
 

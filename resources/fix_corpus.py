@@ -53,13 +53,17 @@ class PreprocessingLineSentence():
                 yield line + "\n"
 
 
-def fix_corpus(path_to_corpus):
+def fix_corpus(path_to_corpus, outfile=None):
     fixed = PreprocessingLineSentence(path_to_corpus)
-    with open(path_to_corpus + "_fixed", "w") as f:
+    outfile = outfile or path_to_corpus + "_fixed"
+    with open(outfile, "w") as f:
         for line in fixed:
             f.write(line)
 
 if __name__ == "__main__":
     import sys
-    fix_corpus(sys.argv[1])
+    if len(sys.argv) == 2:
+        fix_corpus(sys.argv[1], sys.argv[2])
+    else:
+        fix_corpus(sys.argv[1])
 

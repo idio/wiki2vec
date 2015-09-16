@@ -145,9 +145,9 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
 object Word2VecCorpus{
 
   def main(args:Array[String]): Unit ={
-    val pathToReadableWikipedia = "file://" + args(0)
+    val pathToReadableWikipedia = args(0)
     val pathToRedirects =  args(1)
-    val pathToOutput = "file://" + args(2)
+    val pathToOutput = args(2)
     val language = try { args(3) }catch{
          case _ => {
            println("Warning: Stemming is deactivated..")
@@ -160,10 +160,7 @@ object Word2VecCorpus{
     println("Path to Wikipedia Redirects: " + pathToRedirects)
     println("Path to Output Corpus : " + pathToOutput)
 
-    val conf = new SparkConf()
-                   .setMaster("local[8]")
-                   .setAppName("Wiki2Vec corpus creator")
-                   .set("spark.executor.memory", "11G")
+    val conf = new SparkConf().setAppName("Wiki2Vec corpus creator")
 
     implicit val sc: SparkContext = new SparkContext(conf)
 

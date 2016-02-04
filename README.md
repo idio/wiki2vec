@@ -12,9 +12,9 @@ Vectors are generated for (i) words appearing inside wikipedia (ii) vectors for 
 
 You can download via torrent one of the prebuilt word2vec models:
 
-- [English Wikipedia 1000 dimension - No stemming - 10skipgram](https://github.com/idio/wiki2vec/raw/master/torrents/enwiki-gensim-word2vec-1000-nostem-10cbow.torrent)
+- [English Wikipedia (Feb 2015) 1000 dimension - No stemming - 10skipgram](https://github.com/idio/wiki2vec/raw/master/torrents/enwiki-gensim-word2vec-1000-nostem-10cbow.torrent)
 
-
+- [German Wikipedia (Feb 2015) 300 dimension - No stemming - 10cbow] ](https://github.com/idio/wiki2vec/raw/master/torrents/dewiki-gensim-word2vec-300-nostem-10cbow.torrent?raw=true)
 #### Using a prebuilt model
 
  - Get python 2.7

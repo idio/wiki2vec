@@ -34,6 +34,9 @@ libraryDependencies += "org.apache.opennlp" % "opennlp-tools" % "1.5.2-incubatin
 
 libraryDependencies += "com.github.rholder" % "snowball-stemmer" % "1.3.0.581.1"
 
+libraryDependencies += "org.apache.lucene" % "lucene-analyzers-smartcn" % "5.4.1"
+
+
 
 
 

@@ -6,7 +6,7 @@ import info.bliki.wiki.filter.PlainTextConverter
 import info.bliki.wiki.model.WikiModel
 import org.idio.wikipedia.dumps.{WikipediaPage, EnglishWikipediaPage}
 import org.idio.wikipedia.redirects.{RedisRedirectStore, MapRedirectStore, EmptyRedirectStore, RedirectStore}
-import org.idio.wikipedia.utils.{NoStemmer, Stemmer, SnowballStemmer}
+import org.idio.wikipedia.utils.{Tokenizer, NoStemmer, Stemmer, SnowballStemmer}
 import java.util.Locale
 /**
  * Creates a corpus which can feed to word2vec
@@ -120,7 +120,7 @@ class Word2VecCorpus(pathToReadableWiki:String, redirectStore:RedirectStore, pat
                     }catch{
                       case _=> new NoStemmer()
                 }
-         line.split("\\s").map{
+        Tokenizer.tokenize(line, language_local ).map{
             word =>
                word match{
                  case w if w.startsWith(prefix) => w

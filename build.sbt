@@ -38,3 +38,4 @@ libraryDependencies += "org.apache.lucene" % "lucene-analyzers-smartcn" % "5.4.1
 
 
 
+

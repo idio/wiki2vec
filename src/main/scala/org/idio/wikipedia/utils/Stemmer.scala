@@ -12,7 +12,7 @@ class NoStemmer() extends Stemmer{
 class SnowballStemmer(locale:Locale) extends Stemmer{
 
   private val stemmerName = locale.getDisplayLanguage().toLowerCase() +"Stemmer"
-  val stemmer = Class.forName("org.tartarus.snowball.ext.%s".format(stemmerName)).newInstance().asInstanceOf[org.tartarus.snowball.SnowballStemmer]
+  val stemmer = Class.forName("org.tartarus.snowball.ext.%s".format(stemmerName)).newInstance().asInstanceOf[org.tartarus.snowball.SnowballProgram]
 
   def this(language: String) =  this(new Locale(language))
 

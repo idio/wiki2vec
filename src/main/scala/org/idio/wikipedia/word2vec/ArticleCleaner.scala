@@ -37,7 +37,7 @@ object ArticleCleaner {
 
     // regex to find links to other wiki articles
     val linksRegex = """\[\[([^:\[\]])+\]\]""".r
-
+    try{
       linksRegex.replaceAllIn(quoteReplacement(text), linkMatch => {
         try {
           val (surfaceForm, dbpediaId) = parseWikimediaLink(linkMatch.toString())
@@ -50,6 +50,9 @@ object ArticleCleaner {
           }
         }
       })
+    }catch{
+      case _ => text
+    }
 
   }
 

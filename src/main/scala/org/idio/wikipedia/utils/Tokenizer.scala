@@ -27,6 +27,7 @@ object Tokenizer{
 
   def tokenizeChinese(sentence: String): List[String] ={
 
+
     val index = sentence.indexOfSlice(" DBPEDIA_ID/")
 
     if (index > -1){
@@ -38,9 +39,7 @@ object Tokenizer{
       val rest = sentence.slice(1 + index + dbpediaID.length, sentence.length)
       val tokenizedSentence = tokenizeZH(sentence.slice(0, index)) ++ List[String](dbpediaID)
 
-      println("DBPEDIA: "+ dbpediaID)
-      println("rest:" + rest)
-      println("tokenizedSentence:" + tokenizedSentence)
+
 
       tokenizedSentence ++ tokenizeChinese(rest)
     }else{

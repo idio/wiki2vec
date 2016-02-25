@@ -6,7 +6,7 @@ import java.net.URLDecoder
 object Sitelinks {
 
 
-  val dbpediaPatttern = "<https://([a-z]+).wikipedia.org/wiki/([^>]+)>".r
+  val dbpediaPatttern = "<https://([a-z-]+).wikipedia.org/wiki/([^>]+)>".r
   val qidPattern = "<http://www.wikidata.org/entity/([^>]+)>".r
 
 

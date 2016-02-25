@@ -14,17 +14,17 @@ object Wikidata2vecCorpus{
     val conf = new SparkConf().setAppName("Wiki2Vec corpus creator")
     implicit val sc: SparkContext = new SparkContext(conf)
     val wikipediaToQid = Sitelinks.getSiteLinkMap(pathToWikidataSitelinks, language)
-    val  wikidataCorpusRDD  = new Wikidata2vecCorpus(pathToWiki2vecCorpus, wikipediaToQid).getWikidataCorpus()
+    val  wikidataCorpusRDD  = new Wikidata2vecCorpus(pathToWiki2vecCorpus).getWikidataCorpus(wikipediaToQid)
     wikidataCorpusRDD.saveAsTextFile(outputPath)
   }
 
 }
 
-class Wikidata2vecCorpus(pathToWiki2vecCorpus: String, wikipediaToQid:Map[String, String])(implicit val sc: SparkContext){
+class Wikidata2vecCorpus(pathToWiki2vecCorpus: String)(implicit val sc: SparkContext){
 
 
 
-  def getWikidataCorpus() ={
+  def getWikidataCorpus(wikipediaToQid: Map[String, String]) ={
     val corpusRDD = sc.textFile(pathToWiki2vecCorpus)
 
     val annotationPattern = "DBPEDIA_ID/([^ ]+)".r

@@ -32,31 +32,34 @@ object Sitelinks {
 
 
     // <https://kk.wikipedia.org/wiki/%D0%9A%D0%B0%D0%BB%D0%B8%D1%84%D0%BE%D1%80%D0%BD%D0%B8%D1%8F> <http://schema.org/about> <http://www.wikidata.org/entity/Q99>
-    val dbpediaQidPairs = scala.io.Source.fromFile(path, "UTF-8").getLines().flatMap{line =>
+    val dbpediaQidPairs = scala.io.Source.fromFile(path, "UTF-8").getLines().grouped(1000).toParArray.flatMap{
 
-      val splitLine = line.split(" ")
-      val subject = splitLine(0)
-      val obj = splitLine(2)
-      val predicate = splitLine(1)
+      lines =>
+        lines.flatMap { line =>
+          val splitLine = line.split(" ")
+          val subject = splitLine(0)
+          val obj = splitLine(2)
+          val predicate = splitLine(1)
 
-      if (predicate=="<http://schema.org/about>"){
+          if (predicate == "<http://schema.org/about>") {
 
-        val (identifierLang, dbpedia) = extractDbpediaId(unquote(subject))
+            val (identifierLang, dbpedia) = extractDbpediaId(unquote(subject))
 
-        if (language==identifierLang){
-          val qid = extractQid(obj)
-          Some( (dbpedia, qid))
-        }else{
-          None
+            if (language == identifierLang) {
+              val qid = extractQid(obj)
+              Some((dbpedia, qid))
+            } else {
+              None
+            }
+
+          } else {
+            None
+          }
         }
-
-      }else{
-        None
-      }
 
 
     }
-    dbpediaQidPairs.toMap
+    dbpediaQidPairs.toList.toMap
   }
 
 }

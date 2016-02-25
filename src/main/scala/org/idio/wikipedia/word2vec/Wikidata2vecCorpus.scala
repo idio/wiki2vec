@@ -41,7 +41,7 @@ class Wikidata2vecCorpus(pathToWiki2vecCorpus: String, wikipediaToQid:Map[String
           annotation =>
             val wikipediaId = annotation.replace("DBPEDIA_ID/", "")
             wikipediaToQid.get(wikipediaId) match {
-              case Some(qid) => Some(annotation, "DBPEDIA_ID/"+qid)
+              case Some(qid) => Some(annotation, "DBPEDIA_ID/"+qid + " " + annotation )
               case None => None
             }
         }

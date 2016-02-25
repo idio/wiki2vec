@@ -41,10 +41,14 @@ object Sitelinks {
 
       if (predicate=="<http://schema.org/about>"){
 
-        val (language, dbpedia) = extractDbpediaId(unquote(subject))
-        val qid = extractQid(obj)
+        val (identifierLang, dbpedia) = extractDbpediaId(unquote(subject))
 
-        Some( (dbpedia, qid))
+        if (language==identifierLang){
+          val qid = extractQid(obj)
+          Some( (dbpedia, qid))
+        }else{
+          None
+        }
 
       }else{
         None

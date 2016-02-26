@@ -51,6 +51,16 @@ class Wikidata2vecCorpus(pathToWiki2vecCorpus: String)(implicit val sc: SparkCon
             text.replace(pair._1, pair._2)
         }
 
+    }.map{line =>
+
+     line.split(" ").map{word =>
+       if (word.startsWith("DBPEDIA_ID/Q")){
+          word
+       }
+       else{
+         word +"/"+language
+       }
+     }.mkString(" ")
     }
 
   }

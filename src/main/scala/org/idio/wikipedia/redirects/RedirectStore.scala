@@ -67,7 +67,6 @@ object RedirectStore{
                 val origin = URLDecoder.decode(matches.next().group(1), "utf-8")
                 if(matches.hasNext){
                     val destination = URLDecoder.decode(matches.next().group(1), "utf-8")
-                    //print(origin + "-->" + destination)
                     (origin, destination)
                 }else{
                     ("nothing", "nothing")

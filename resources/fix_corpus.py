@@ -49,7 +49,6 @@ class PreprocessingLineSentence():
 
                 line = "".join(line_parts)
 
-                #line = utils.to_unicode(line)
                 yield line + "\n"
 
 

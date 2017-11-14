@@ -36,20 +36,22 @@ READABLEWIKI="$TARGET_DIR/${LANGUAGE}wiki-latest.lines"
 SPLIT_OUTPUT_CORPUS="$WDIR/${LANGUAGE}wiki"
 OUTPUTCORPUS="$TARGET_DIR/${LANGUAGE}wiki.corpus"
 
-if [ ! -z "$3" ]; then 
+if [ ! -z "$3" ]; then
 	STEMMERNAME="$3"
-else 
+else
 	STEMMERNAME="$LANGUAGE"
 fi
 
 echo "Language: $LANGUAGE"
 echo "Working directory: $WDIR"
+echo "Language stemmer: $STEMMERNAME"
 
 
 apt-get update
 
 # Installing Java
 add-apt-repository ppa:webupd8team/java
+
 
 # Installing SBT
 echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
@@ -81,13 +83,14 @@ java -Xmx10G -Xms10G -cp $JAR_PATH org.idio.wikipedia.dumps.CreateReadableWiki $
 
 # Create Wiki2Vec Corpus
 echo "Creating Word2vec Corpus"
-$SPARK_PATH/bin/spark-submit --class org.idio.wikipedia.word2vec.Word2VecCorpus $JAR_PATH $READABLEWIKI fakePathToRedirect/file.nt $SPLIT_OUTPUT_CORPUS $STEMMERNAME
+$SPARK_PATH/bin/spark-submit --driver-memory 15g --num-executors 4 --class org.idio.wikipedia.word2vec.Word2VecCorpus $JAR_PATH $READABLEWIKI $BASE_DIR/fakePathToRedirect/file.nt $SPLIT_OUTPUT_CORPUS $STEMMERNAME
 
 # joining split files
 echo "Joining corpus.."
 cd $SPLIT_OUTPUT_CORPUS
 cat part* >> $OUTPUTCORPUS
 
+echo "fixing up punctutation in final corpus"
+python resources/fix_corpus.py ${OUTPUTCORPUS}.fixed
 
-echo " ^___^ corpus : $OUTPUTCORPUS"
-
+echo " ^___^ corpus : ${OUTPUTCORPUS}.fixed

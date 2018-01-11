@@ -59,12 +59,12 @@ echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/s
 apt-get update
 apt-get install unzip oracle-java7-installer sbt
 
-
 mkdir -p $WDIR
+mkdir -p $SPLIT_OUTPUT_CORPUS
 cd $WDIR
 
 echo "Downloading Wikipedia Dump"
-curl -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
+curl -L -O "http://dumps.wikimedia.org/${LANGUAGE}wiki/latest/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
 WIKIPEDIA_PATH="$WDIR/${LANGUAGE}wiki-latest-pages-articles-multistream.xml.bz2"
 
 echo "Downloading Apache Spark"
@@ -91,6 +91,7 @@ cd $SPLIT_OUTPUT_CORPUS
 cat part* >> $OUTPUTCORPUS
 
 echo "fixing up punctutation in final corpus"
-python resources/fix_corpus.py ${OUTPUTCORPUS}.fixed
+cd $BASE_DIR
+python resources/fix_corpus.py $OUTPUTCORPUS ${OUTPUTCORPUS}.fixed
 
-echo " ^___^ corpus : ${OUTPUTCORPUS}.fixed
+echo " ^___^ corpus : ${OUTPUTCORPUS}.fixed"
